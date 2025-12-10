@@ -1,10 +1,13 @@
 using Microsoft.EntityFrameworkCore;
-using TodoApp.Api.Dtos;
+using TodoApp.Api.Endpoints;
 using TodoApp.Application.Interfaces;
 using TodoApp.Application.Services;
 using TodoApp.Domain.Interfaces;
 using TodoApp.Infrastructure.Data;
 using TodoApp.Infrastructure.Data.Repositories;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using TodoApp.Api.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,9 +21,15 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// ===== INJECAO DE DEPENDENCIAS =====
+// ===== Injecao de Dependencias =====
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ITodoService, TodoService>();
+
+// ===== Validadores =====
+// Fluent Validation
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateTodoRequestValidator>();
 
 // ===== Configurando DB Context =====
 builder.Services.AddDbContext<AppDbContext>(options => { options.UseSqlite(connectionString); });
@@ -34,35 +43,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapPost("/todos", async (CreateTodoRequestDto request, ITodoService todoService) =>
-{
-    var newTodoId = await todoService.CreateTodoAsync(request.Title, request.Description);
-
-    return Results.Created($"/todos/{newTodoId}", newTodoId);
-});
-
-app.MapGet("/todos", async (ITodoService todoService) => await todoService.GetAllAsync());
-
-app.MapGet("/todos/{id}", async (Guid id, ITodoService todoService) =>
-{
-    var result = await todoService.GetByIdAsync(id);
-
-    return result == null ? Results.NotFound() : Results.Json(result);
-});
-
-app.MapPut("/todos/{id}", async (Guid id, UpdateTodoRequestDto request, ITodoService todoService) =>
-{
-    var isUpdated = await todoService.UpdateTodoAsync(id, request.title, request.description);
-
-    return isUpdated ? Results.NoContent() : Results.NotFound();
-});
-
-app.MapDelete("/todos/{id}", async (Guid id, ITodoService todoService) =>
-{
-    var isDeleted = await todoService.DeleteTodoAsync(id);
-
-    return isDeleted ? Results.NoContent() : Results.NotFound();
-});
+// ===== Endpoints =====
+app.MapTodosEndpoints();
 
 app.UseHttpsRedirection();
 

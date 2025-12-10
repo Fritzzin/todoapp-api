@@ -1,0 +1,33 @@
+using FluentValidation;
+
+namespace TodoApp.Api.Filters;
+
+public class ValidationFilter<T> : IEndpointFilter where T : class
+{
+    private readonly IValidator<T> _validator;
+    
+    public ValidationFilter(IValidator<T> validator)
+    {
+        _validator = validator;
+    }
+    
+    public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
+    {
+        // Tenta encontrar o argumento do tipo T (nosso DTO) nos parâmetros do endpoint
+        var argument = context.GetArgument<T>(0); 
+
+        // Valida o argumento
+        var validationResult = await _validator.ValidateAsync(argument);
+
+        if (!validationResult.IsValid)
+        {
+            // Se for inválido, retorna um 400 Bad Request com os erros
+            return Results.ValidationProblem(validationResult.ToDictionary());
+        }
+
+        // Se for válido, continua para o próximo filtro ou para o handler do endpoint
+        return await next(context);
+    }
+    
+    
+}
