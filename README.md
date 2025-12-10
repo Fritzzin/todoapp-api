@@ -18,5 +18,5 @@ Then add the following line with the Guid of the created folder with the secret 
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId> GUID IN HERE </UserSecretsId>
-    </PropertyGroup>
+</PropertyGroup>
 ```
