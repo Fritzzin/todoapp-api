@@ -1,6 +1,7 @@
 using TodoApp.Api.Dtos;
 using TodoApp.Application.Interfaces;
 using TodoApp.Api.Filters;
+using TodoApp.Domain.Entities;
 
 namespace TodoApp.Api.Endpoints;
 
@@ -12,19 +13,33 @@ public static class TodosEndpoints
             {
                 var newTodoId = await todoService.CreateTodoAsync(request.Title, request.Description);
 
-                return Results.Created($"/todos/{newTodoId}", newTodoId);
+                var response = new ResponseViewModel<Guid>(newTodoId);
+
+                return Results.Created($"/todos/{newTodoId}", response);
             })
             .AddEndpointFilter<ValidationFilter<CreateTodoRequestDto>>()
             .WithDescription("Creates a Todo");
 
-        app.MapGet("/todos", async (ITodoService todoService) => await todoService.GetAllAsync())
+        app.MapGet("/todos", async (ITodoService todoService) =>
+            {
+                var todos = await todoService.GetAllAsync();
+                var response = new ResponseViewModel<IEnumerable<Todo>>(todos);
+                return Results.Ok(response);
+            })
             .WithDescription("Gets all todos");
 
         app.MapGet("/todos/{id}", async (Guid id, ITodoService todoService) =>
             {
                 var result = await todoService.GetByIdAsync(id);
 
-                return result == null ? Results.NotFound() : Results.Json(result);
+                if (result is null)
+                {
+                    var responseFailure = new ResponseViewModel<Todo>("Resultado nao encontrado");
+                    return Results.NotFound(responseFailure);
+                }
+
+                var responseSuccess = new ResponseViewModel<Todo>(result);
+                return Results.Ok(responseSuccess);
             })
             .WithDescription("Get one of the todos based on ID");
 
@@ -32,7 +47,12 @@ public static class TodosEndpoints
             {
                 var isUpdated = await todoService.UpdateTodoAsync(id, request.Title, request.Description);
 
-                return isUpdated ? Results.NoContent() : Results.NotFound();
+                if (!isUpdated)
+                {
+                    return Results.NotFound(new ResponseViewModel<bool>(false));
+                }
+
+                return Results.NoContent();
             })
             .AddEndpointFilter<ValidationFilter<UpdateTodoRequestDto>>()
             .WithDescription("Updates one of the todos based on ID");
@@ -41,7 +61,12 @@ public static class TodosEndpoints
             {
                 var isDeleted = await todoService.DeleteTodoAsync(id);
 
-                return isDeleted ? Results.NoContent() : Results.NotFound();
+                if (!isDeleted)
+                {
+                    return Results.NotFound(new ResponseViewModel<bool>(false));
+                }
+
+                return Results.NoContent();
             })
             .WithDescription("Deletes one of the todos based on ID");
     }

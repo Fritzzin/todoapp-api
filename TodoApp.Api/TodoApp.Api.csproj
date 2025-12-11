@@ -23,4 +23,8 @@
       <ProjectReference Include="..\TodoApp.Infrastructure\TodoApp.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Middleware\" />
+    </ItemGroup>
+
 </Project>

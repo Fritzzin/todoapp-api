@@ -1,5 +1,3 @@
-using System.Data;
-
 namespace TodoApp.Domain.Entities;
 
 public class Todo
