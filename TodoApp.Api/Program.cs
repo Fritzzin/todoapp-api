@@ -7,6 +7,7 @@ using TodoApp.Infrastructure.Data;
 using TodoApp.Infrastructure.Data.Repositories;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using TodoApp.Api.Middleware;
 using TodoApp.Api.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,6 +39,9 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateTodoRequestValidator>
 builder.Services.AddValidatorsFromAssemblyContaining<UpdateTodoRequestValidator>();
 
 var app = builder.Build();
+
+// ===== Middlewares =====
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
