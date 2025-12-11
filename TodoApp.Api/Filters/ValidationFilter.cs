@@ -1,4 +1,5 @@
 using FluentValidation;
+using TodoApp.Api.Dtos;
 
 namespace TodoApp.Api.Filters;
 
@@ -26,8 +27,14 @@ public class ValidationFilter<T> : IEndpointFilter where T : class
 
         if (!validationResult.IsValid)
         {
+            var errorMessages = validationResult.Errors
+                .Select(e => e.ErrorMessage)
+                .ToList();
+            var errorResponse = new ResponseViewModel<object>(errorMessages);
+            return Results.BadRequest(errorResponse);
+
             // Se for inválido, retorna um 400 Bad Request com os erros
-            return Results.ValidationProblem(validationResult.ToDictionary());
+            // return Results.ValidationProblem(validationResult.ToDictionary());
         }
 
         // Se for válido, continua para o próximo filtro ou para o handler do endpoint
