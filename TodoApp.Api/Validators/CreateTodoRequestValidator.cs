@@ -1,4 +1,3 @@
-using TodoApp.Domain.Entities;
 using FluentValidation;
 using TodoApp.Api.Dtos;
 
@@ -14,6 +13,6 @@ public class CreateTodoRequestValidator : AbstractValidator<CreateTodoRequestDto
             .MaximumLength(255).WithMessage("Titulo deve ter no maximo 255 caracteres");
 
         RuleFor(todo => todo.Description)
-            .MaximumLength(500).WithMessage("Titulo deve ter no maximo 255 caracteres");
+            .MaximumLength(500).WithMessage("Descrição deve ter no maximo 500 caracteres");
     }
 }

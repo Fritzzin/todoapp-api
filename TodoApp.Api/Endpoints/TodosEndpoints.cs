@@ -6,7 +6,7 @@ namespace TodoApp.Api.Endpoints;
 
 public static class TodosEndpoints
 {
-    public static void MapTodosEndpoints(this WebApplication app)
+    public static void AddEndpointsTodos(this WebApplication app)
     {
         app.MapPost("/todos", async (CreateTodoRequestDto request, ITodoService todoService) =>
         {

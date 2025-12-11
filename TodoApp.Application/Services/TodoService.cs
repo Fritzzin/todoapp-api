@@ -7,33 +7,35 @@ namespace TodoApp.Application.Services;
 public class TodoService : ITodoService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private ITodoRepository _todos;
 
-    public TodoService(IUnitOfWork unitOfWork)
+    public TodoService(IUnitOfWork unitOfWork, ITodoRepository todos )
     {
         _unitOfWork = unitOfWork;
+        _todos = todos;
     }
 
     public async Task<Guid> CreateTodoAsync(string title, string? description)
     {
         var newTodo = new Todo(title, description);
-        _unitOfWork.Todos.Add(newTodo);
+        _todos.Add(newTodo);
         await _unitOfWork.CommitAsync();
         return newTodo.Id;
     }
 
     public async Task<IEnumerable<Todo>> GetAllAsync()
     {
-        return await _unitOfWork.Todos.FindAll();
+        return await _todos.FindAll();
     }
 
     public async Task<Todo?> GetByIdAsync(Guid guid)
     {
-        return await _unitOfWork.Todos.FindById(guid);
+        return await _todos.FindById(guid);
     }
 
     public async Task<bool> UpdateTodoAsync(Guid id, string title, string? description)
     {
-        var todoToUpdate = await _unitOfWork.Todos.FindById(id);
+        var todoToUpdate = await _todos.FindById(id);
 
         if (todoToUpdate == null)
         {
@@ -48,16 +50,16 @@ public class TodoService : ITodoService
 
     public async Task<bool> DeleteTodoAsync(Guid id)
     {
-        var todoToDelete = await _unitOfWork.Todos.FindById(id);
+        var todoToDelete = await _todos.FindById(id);
 
         if (todoToDelete == null)
         {
             return false;
         }
 
-        _unitOfWork.Todos.DeleteOne(todoToDelete);
+        _todos.DeleteOne(todoToDelete);
         await _unitOfWork.CommitAsync();
-        
+
         return true;
     }
 }

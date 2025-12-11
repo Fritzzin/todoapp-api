@@ -24,15 +24,17 @@ builder.Services.AddSwaggerGen();
 // ===== Injecao de Dependencias =====
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ITodoService, TodoService>();
+builder.Services.AddScoped<ITodoRepository, TodoRepository>();
+builder.Services.AddScoped<DbContext, AppDbContext>();
+
+// ===== Configurando DB Context =====
+builder.Services.AddDbContext<AppDbContext>(options => { options.UseSqlite(connectionString); });
 
 // ===== Validadores =====
 // Fluent Validation
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateTodoRequestValidator>();
-
-// ===== Configurando DB Context =====
-builder.Services.AddDbContext<AppDbContext>(options => { options.UseSqlite(connectionString); });
 
 var app = builder.Build();
 
@@ -44,7 +46,7 @@ if (app.Environment.IsDevelopment())
 }
 
 // ===== Endpoints =====
-app.MapTodosEndpoints();
+app.AddEndpointsTodos();
 
 app.UseHttpsRedirection();
 
