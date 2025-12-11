@@ -1,6 +1,6 @@
 namespace TodoApp.Api.Dtos;
 
 public record UpdateTodoRequestDto(
-    string title,
-    string? description
+    string Title,
+    string? Description
 );

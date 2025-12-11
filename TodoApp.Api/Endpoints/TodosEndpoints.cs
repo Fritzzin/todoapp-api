@@ -30,10 +30,11 @@ public static class TodosEndpoints
 
         app.MapPut("/todos/{id}", async (Guid id, UpdateTodoRequestDto request, ITodoService todoService) =>
             {
-                var isUpdated = await todoService.UpdateTodoAsync(id, request.title, request.description);
+                var isUpdated = await todoService.UpdateTodoAsync(id, request.Title, request.Description);
 
                 return isUpdated ? Results.NoContent() : Results.NotFound();
             })
+            .AddEndpointFilter<ValidationFilter<UpdateTodoRequestDto>>()
             .WithDescription("Updates one of the todos based on ID");
 
         app.MapDelete("/todos/{id}", async (Guid id, ITodoService todoService) =>

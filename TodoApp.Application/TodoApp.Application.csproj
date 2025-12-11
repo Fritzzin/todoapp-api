@@ -7,13 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Commands\" />
-      <Folder Include="Handlers\" />
-      <Folder Include="Mappers\" />
-      <Folder Include="Queries\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\TodoApp.Domain\TodoApp.Domain.csproj" />
     </ItemGroup>
 

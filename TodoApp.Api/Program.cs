@@ -35,6 +35,7 @@ builder.Services.AddDbContext<AppDbContext>(options => { options.UseSqlite(conne
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateTodoRequestValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<UpdateTodoRequestValidator>();
 
 var app = builder.Build();
 
