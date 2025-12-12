@@ -6,6 +6,10 @@
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AResults_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003F_002Econfig_003FJetBrains_003FRider2025_002E3_003Fresharper_002Dhost_003FSourcesCache_003Fa434b74a44cbf5195ce762afb1f966a5e1ce8e28090ea5b507b188fa8d35_003FResults_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=3428a922_002Daa1f_002D43fb_002Da555_002D7c1c57ecefa6/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="CreateTodo_WithValidTitle_ShouldSucceed" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;
-    &lt;TestId&gt;xUnit::7F8CEE77-D478-43AA-9A6F-2573A9E0516A::net8.0::TodoApp.Domain.Tests.TodoUnitTests.CreateTodo_WithNullTitle_ShouldThrow&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::C027B910-CEB2-4620-B58C-4F37C5A1E9CD::net8.0::TodoApp.Application.Tests.TodoServiceTests.CreateTodoAsync_WithValidData_ShouldSucceed&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::C027B910-CEB2-4620-B58C-4F37C5A1E9CD::net8.0::TodoApp.Application.Tests.TodoServiceTests.GetByIdAsync_WhenTodoExists_ShouldReturnTodo&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::C027B910-CEB2-4620-B58C-4F37C5A1E9CD::net8.0::TodoApp.Application.Tests.TodoServiceTests.GetByIdAsync_WhenTodoDoesNotExist_ShouldReturnNull&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::C027B910-CEB2-4620-B58C-4F37C5A1E9CD::net8.0::TodoApp.Application.Tests.TodoServiceTests.UpdateTodoAsync_WhenTodoExists_ShouldUpdateAndCommit&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::C027B910-CEB2-4620-B58C-4F37C5A1E9CD::net8.0::TodoApp.Application.Tests.TodoServiceTests.UpdateTodoAsync_WhenTodoDoesNotExists_ShouldReturnFalseAndNotCommit&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
