@@ -1,7 +1,6 @@
 using TodoApp.Api.Dtos;
 using TodoApp.Application.Interfaces;
 using TodoApp.Api.Filters;
-using TodoApp.Domain.Entities;
 
 namespace TodoApp.Api.Endpoints;
 
@@ -12,21 +11,18 @@ public static class TodosEndpoints
         app.MapPost("/todos", async (CreateTodoRequestDto request, ITodoService todoService) =>
             {
                 var newTodoId = await todoService.CreateTodoAsync(request.Title, request.Description);
-
-                var response = new ResponseViewModel<Guid>(newTodoId);
-
-                return Results.Created($"/todos/{newTodoId}", response);
+                return Results.Created($"/todos/{newTodoId}",
+                    ResponseViewModel.Success(newTodoId, StatusCodes.Status201Created));
             })
             .AddEndpointFilter<ValidationFilter<CreateTodoRequestDto>>()
-            .WithDescription("Creates a Todo");
+            .WithDescription("Cria um novo item.");
 
         app.MapGet("/todos", async (ITodoService todoService) =>
             {
                 var todos = await todoService.GetAllAsync();
-                var response = new ResponseViewModel<IEnumerable<Todo>>(todos);
-                return Results.Ok(response);
+                return Results.Ok(ResponseViewModel.Success(todos));
             })
-            .WithDescription("Gets all todos");
+            .WithDescription("Busca todos os items.");
 
         app.MapGet("/todos/{id}", async (Guid id, ITodoService todoService) =>
             {
@@ -34,14 +30,13 @@ public static class TodosEndpoints
 
                 if (result is null)
                 {
-                    var responseFailure = new ResponseViewModel<Todo>("Resultado nao encontrado");
-                    return Results.NotFound(responseFailure);
+                    return Results.NotFound(ResponseViewModel.Failure("Item nao  encontrado",
+                        StatusCodes.Status404NotFound));
                 }
 
-                var responseSuccess = new ResponseViewModel<Todo>(result);
-                return Results.Ok(responseSuccess);
+                return Results.Ok(ResponseViewModel.Success(result));
             })
-            .WithDescription("Get one of the todos based on ID");
+            .WithDescription("Busca um dos items baseado no ID");
 
         app.MapPut("/todos/{id}", async (Guid id, UpdateTodoRequestDto request, ITodoService todoService) =>
             {
@@ -49,13 +44,40 @@ public static class TodosEndpoints
 
                 if (!isUpdated)
                 {
-                    return Results.NotFound(new ResponseViewModel<bool>(false));
+                    return Results.NotFound(ResponseViewModel.Failure($"Falha ao editar {id}",
+                        StatusCodes.Status404NotFound));
                 }
 
                 return Results.NoContent();
             })
             .AddEndpointFilter<ValidationFilter<UpdateTodoRequestDto>>()
-            .WithDescription("Updates one of the todos based on ID");
+            .WithDescription("Atualiza item com novas informações.");
+
+        app.MapPut("/todos/{id}/done", async (Guid id, ITodoService todoService) =>
+        {
+            var isMarked = await todoService.UpdateTodoAsDoneAsync(id);
+            if (!isMarked)
+            {
+                return Results.NotFound(ResponseViewModel.Failure($"Falha ao marcar {id} como feito!",
+                    StatusCodes.Status404NotFound));
+            }
+
+            return Results.NoContent();
+        }).WithDescription("Atualiza item como feito.");
+        
+        app.MapPut("/todos/{id}/undone", async (Guid id, ITodoService todoService) =>
+        {
+            var isMarked = await todoService.UpdateTodoAsUndoneAsync(id);
+            if (!isMarked)
+            {
+                return Results.NotFound(ResponseViewModel.Failure($"Falha ao marcar {id} como não feito!",
+                    StatusCodes.Status404NotFound));
+            }
+
+            return Results.NoContent();
+        }).WithDescription("Atualiza item como não feito.");
+
+        
 
         app.MapDelete("/todos/{id}", async (Guid id, ITodoService todoService) =>
             {
@@ -63,13 +85,12 @@ public static class TodosEndpoints
 
                 if (!isDeleted)
                 {
-                    var responseFailure = ResponseViewModel.Failure("Falha ao deletar Todo", 404);
-                    return Results.NotFound(responseFailure);
+                    return Results.NotFound(ResponseViewModel.Failure($"Falha ao deletar {id}",
+                        StatusCodes.Status404NotFound));
                 }
 
-                var responseSuccess = ResponseViewModel.Success(204);
-                return Results.Ok(responseSuccess);
+                return Results.NoContent();
             })
-            .WithDescription("Deletes one of the todos based on ID");
+            .WithDescription("Remove item.");
     }
 }

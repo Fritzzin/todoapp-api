@@ -62,4 +62,31 @@ public class TodoService : ITodoService
 
         return true;
     }
+
+    public async Task<bool> UpdateTodoAsDoneAsync(Guid id)
+    {
+        var todoToMarkAsDone = await _todos.FindById(id);
+        if (todoToMarkAsDone == null)
+        {
+            return false;
+        }
+        
+        todoToMarkAsDone.MarkAsDone();
+        await _unitOfWork.CommitAsync();
+        return true;
+    }
+
+    public async Task<bool> UpdateTodoAsUndoneAsync(Guid id)
+    {
+        
+        var todoToMarkAsDone = await _todos.FindById(id);
+        if (todoToMarkAsDone == null)
+        {
+            return false;
+        }
+        
+        todoToMarkAsDone.MarkAsUndone();
+        await _unitOfWork.CommitAsync();
+        return true;
+    }
 }

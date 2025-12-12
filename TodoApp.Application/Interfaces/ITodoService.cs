@@ -9,4 +9,6 @@ public interface ITodoService
     Task<Todo?> GetByIdAsync(Guid id);
     Task<bool> UpdateTodoAsync(Guid id, string title, string? description);
     Task<bool> DeleteTodoAsync(Guid id);
+    Task<bool> UpdateTodoAsDoneAsync(Guid id);
+    Task<bool> UpdateTodoAsUndoneAsync(Guid id);
 }
