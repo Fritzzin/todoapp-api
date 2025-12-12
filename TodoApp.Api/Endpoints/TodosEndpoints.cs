@@ -63,10 +63,12 @@ public static class TodosEndpoints
 
                 if (!isDeleted)
                 {
-                    return Results.NotFound(new ResponseViewModel<bool>(false));
+                    var responseFailure = ResponseViewModel.Failure("Falha ao deletar Todo", 404);
+                    return Results.NotFound(responseFailure);
                 }
 
-                return Results.NoContent();
+                var responseSuccess = ResponseViewModel.Success(204);
+                return Results.Ok(responseSuccess);
             })
             .WithDescription("Deletes one of the todos based on ID");
     }
