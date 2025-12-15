@@ -7,7 +7,8 @@ public static class AuthEndpoints
 {
     public static void AddAuthEndpoint(this WebApplication app)
     {
-        app.MapPost("/login", async (LoginRequestDto request, ITokenService tokenService) =>
+        var authGroup = app.MapGroup("/login").WithTags("Authentication");
+        authGroup.MapPost("/", async (LoginRequestDto request, ITokenService tokenService) =>
         {
             var tokenString = await tokenService.AuthenticateAsync(request.Email, request.Password);
 
