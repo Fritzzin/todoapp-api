@@ -1,0 +1,19 @@
+using TodoApp.Domain.Entities;
+
+namespace TodoApp.Infrastructure.Data;
+
+public static class DataSeeder
+{
+    public static void Seed(AppDbContext context)
+    {
+        context.Database.EnsureCreated();
+
+        if (!context.Users.Any())
+        {
+            var user = new User("teste@toshyro.com", "teste");
+
+            context.Users.Add(user);
+            context.SaveChanges();
+        }
+    }
+}

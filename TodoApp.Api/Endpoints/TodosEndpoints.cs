@@ -16,13 +16,15 @@ public static class TodosEndpoints
             })
             .AddEndpointFilter<ValidationFilter<CreateTodoRequestDto>>()
             .WithDescription("Cria um novo item.");
+            // .RequireAuthorization();
 
         app.MapGet("/todos", async (ITodoService todoService) =>
             {
                 var todos = await todoService.GetAllAsync();
                 return Results.Ok(ResponseViewModel.Success(todos));
             })
-            .WithDescription("Busca todos os items.");
+            .WithDescription("Busca todos os items.")
+            .RequireAuthorization();
 
         app.MapGet("/todos/{id}", async (Guid id, ITodoService todoService) =>
             {
@@ -64,7 +66,7 @@ public static class TodosEndpoints
 
             return Results.NoContent();
         }).WithDescription("Atualiza item como feito.");
-        
+
         app.MapPut("/todos/{id}/undone", async (Guid id, ITodoService todoService) =>
         {
             var isMarked = await todoService.UpdateTodoAsUndoneAsync(id);
@@ -77,7 +79,6 @@ public static class TodosEndpoints
             return Results.NoContent();
         }).WithDescription("Atualiza item como não feito.");
 
-        
 
         app.MapDelete("/todos/{id}", async (Guid id, ITodoService todoService) =>
             {
