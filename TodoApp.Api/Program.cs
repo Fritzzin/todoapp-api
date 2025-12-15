@@ -14,18 +14,17 @@ using TodoApp.Api.Middleware;
 using TodoApp.Api.Validators;
 using Microsoft.OpenApi.Models;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Defina um nome para a política de CORS
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 // ========== SERVICOS ==========
 
 // Adicione o serviço de CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: MyAllowSpecificOrigins,
+    options.AddPolicy(name: myAllowSpecificOrigins,
         policy =>
         {
             // Para desenvolvimento, podemos ser permissivos.
@@ -128,7 +127,7 @@ app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 app.UseHttpsRedirection();
 
 // Ele deve vir antes de UseAuthentication e UseAuthorization.
-app.UseCors(MyAllowSpecificOrigins);
+app.UseCors(myAllowSpecificOrigins);
 
 
 // Middlewares de Autenticacao
