@@ -1,6 +1,6 @@
 using TodoApp.Domain.Interfaces;
 
-namespace TodoApp.Infrastructure.Data.Repositories;
+namespace TodoApp.Infrastructure.Data;
 
 public class UnitOfWork : IUnitOfWork
 {
