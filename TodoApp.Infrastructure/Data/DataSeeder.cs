@@ -8,12 +8,12 @@ public static class DataSeeder
     {
         context.Database.EnsureCreated();
 
-        if (!context.Users.Any())
-        {
-            var user = new User("teste@toshyro.com", "teste");
+        if (context.Users.Any()) return; // Se existir algum usuario, retorne
+        
+        // Poderia utilizar valores no secret para nao ficar login e senha no codigo
+        var user = new User("teste@toshyro.com", "teste");
 
-            context.Users.Add(user);
-            context.SaveChanges();
-        }
+        context.Users.Add(user);
+        context.SaveChanges();
     }
 }

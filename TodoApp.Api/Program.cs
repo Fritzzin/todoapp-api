@@ -29,7 +29,11 @@ builder.Services.AddCors(options =>
         {
             // Para desenvolvimento, podemos ser permissivos.
             // Permitir qualquer origem, qualquer método, qualquer cabeçalho.
-            policy.AllowAnyOrigin()
+            policy.WithOrigins(
+                    "http://localhost:5272",
+                    "http://localhost:3000",
+                    "https://localhost:7080"
+                )
                 .AllowAnyMethod()
                 .AllowAnyHeader();
         });
@@ -93,6 +97,7 @@ builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateTodoRequestValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<UpdateTodoRequestValidator>();
 
+// Autenticacao JWT
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -118,8 +123,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
-
-
 // ===== Middlewares =====
 // Middleware de Excecoes
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
@@ -128,7 +131,6 @@ app.UseHttpsRedirection();
 
 // Ele deve vir antes de UseAuthentication e UseAuthorization.
 app.UseCors(myAllowSpecificOrigins);
-
 
 // Middlewares de Autenticacao
 app.UseAuthentication();
@@ -141,20 +143,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
 // ===== SEED DOS DADOS =====
 // Inserir dados no banco caso estiver vazio ou for recem criado
 // Obtenha o escopo de serviço para resolver o DbContext
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    DataSeeder.Seed(dbContext); // Chame seu método
+    DataSeeder.Seed(dbContext);
 }
-
 
 // ===== Endpoints =====
 app.AddEndpointsTodos();
 app.AddAuthEndpoint();
-
 
 app.Run();

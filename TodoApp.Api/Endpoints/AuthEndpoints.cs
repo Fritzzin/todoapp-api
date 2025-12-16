@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices.ComTypes;
 using TodoApp.Api.Dtos;
 using TodoApp.Application.Interfaces;
 
@@ -14,13 +15,16 @@ public static class AuthEndpoints
 
             if (tokenString is null)
             {
-                var failureResponse =
-                    ResponseViewModel.Failure("Erro de Autenticacao", StatusCodes.Status401Unauthorized);
-                return Results.Json(failureResponse, statusCode: failureResponse.StatusCode);
+                return Results.Json(
+                    data: ResponseViewModel.Failure("Erro de Autenticação"),
+                    statusCode: StatusCodes.Status401Unauthorized
+                );
             }
 
-            var successResponse = ResponseViewModel.Success(new { Token = tokenString });
-            return Results.Ok(successResponse);
+            return Results.Json(
+                data: ResponseViewModel.Success(tokenString),
+                statusCode: StatusCodes.Status200OK
+            );
         });
     }
 }

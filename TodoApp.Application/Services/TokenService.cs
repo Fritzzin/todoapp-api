@@ -27,13 +27,14 @@ public class TokenService : ITokenService
             return null;
         }
 
-        // 1. Criar Header
+        // Criar chave
         var key = Encoding.UTF8.GetBytes(_configuration["JwtSettings:SecretKey"]);
         var securityKey = new SymmetricSecurityKey(key);
 
+        // Descriptor (detalhes) do token
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            // 2. Criar Payload
+            // Criar Payload
             Subject = new ClaimsIdentity([
                 // Informacoes que identificariam o usuario (sem dados sensiveis)
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
@@ -44,11 +45,11 @@ public class TokenService : ITokenService
             Audience = _configuration["JwtSettings:Audience"],
             Issuer = _configuration["JwtSettings:Issuer"],
 
-            // 3. Assinatura: Recebe a securityKey e criptografa com sha256
+            // Assinatura: Recebe a securityKey e criptografa com sha256
             SigningCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256)
         };
 
-        // 4. Crair o token em si
+        // Criacao do token utilizando parametros a cima
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
         var tokenString = tokenHandler.WriteToken(token);

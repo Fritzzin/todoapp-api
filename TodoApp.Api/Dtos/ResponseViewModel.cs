@@ -6,61 +6,54 @@ public class ResponseViewModel<T>
     public T? Data { get; private set; }
     public List<string>? Errors { get; private set; }
 
-    public int StatusCode { get; private set; }
-
-    public ResponseViewModel(int statusCode)
+    public ResponseViewModel()
     {
         Success = true;
         Data = default;
         Errors = null;
-        StatusCode = statusCode;
     }
 
-    public ResponseViewModel(T data, int statusCode = StatusCodes.Status200OK)
+    public ResponseViewModel(T data)
     {
         Success = true;
         Data = data;
         Errors = null;
-        StatusCode = statusCode;
     }
 
-    public ResponseViewModel(List<string> errors, int statusCode = StatusCodes.Status400BadRequest)
+    public ResponseViewModel(List<string> errors)
     {
         Success = false;
         Data = default;
         Errors = errors;
-        StatusCode = statusCode;
     }
 
-    public ResponseViewModel(string error, int statusCode = StatusCodes.Status400BadRequest)
+    public ResponseViewModel(string error)
     {
         Success = false;
         Data = default;
         Errors = [error];
-        StatusCode = statusCode;
     }
 }
 
 public static class ResponseViewModel
 {
-    public static ResponseViewModel<object> Success(int statusCode = StatusCodes.Status200OK)
+    public static ResponseViewModel<object> Success()
     {
-        return new ResponseViewModel<object>(statusCode);
+        return new ResponseViewModel<object>();
     }
 
-    public static ResponseViewModel<T> Success<T>(T data, int statusCode = StatusCodes.Status200OK)
+    public static ResponseViewModel<T> Success<T>(T data)
     {
-        return new ResponseViewModel<T>(data, statusCode);
+        return new ResponseViewModel<T>(data);
     }
 
-    public static ResponseViewModel<object> Failure(List<string> errors,
-        int statusCode = StatusCodes.Status400BadRequest)
+    public static ResponseViewModel<object> Failure(List<string> errors)
     {
-        return new ResponseViewModel<object>(errors, statusCode);
+        return new ResponseViewModel<object>(errors);
     }
 
-    public static ResponseViewModel<object> Failure(string error, int statusCode = StatusCodes.Status400BadRequest)
+    public static ResponseViewModel<object> Failure(string error)
     {
-        return new ResponseViewModel<object>(error, statusCode);
+        return new ResponseViewModel<object>(error);
     }
 }
